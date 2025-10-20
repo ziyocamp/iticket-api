@@ -88,3 +88,332 @@ Bu degani:
 | updated_at  | TIMESTAMP     | DEFAULT now()                                                                                 | Oxirgi o‘zgartirish vaqti |
 
 ---
+
+## ⚙️ API Overview
+
+### Base URL
+
+```
+/api/v1
+```
+
+### Authentication
+
+* JWT (Bearer token)
+* `role`: `"admin"` yoki `"user"`
+
+---
+
+## 🧍‍♂️ USER AUTH MODULE
+
+### **POST /users/register**
+
+> Yangi foydalanuvchi yaratish
+
+**Request**
+
+```json
+{
+  "username": "diyor",
+  "email": "diyor@example.com",
+  "phone": "+998901234567",
+  "password": "12345",
+  "age": 20
+}
+```
+
+**Response**
+
+```json
+{
+  "id": 1,
+  "username": "diyor",
+  "email": "diyor@example.com",
+  "role": "user"
+}
+```
+
+---
+
+### **POST /users/login**
+
+> Login va JWT olish
+
+**Request**
+
+```json
+{
+  "username": "diyor",
+  "password": "12345"
+}
+```
+
+**Response**
+
+```json
+{
+  "access_token": "jwt.token.value",
+  "token_type": "bearer"
+}
+```
+
+---
+
+### **GET /users/me**
+
+> Hozirgi foydalanuvchini qaytaradi
+
+**Auth:** Bearer Token
+**Response:**
+
+```json
+{
+  "id": 1,
+  "username": "diyor",
+  "email": "diyor@example.com",
+  "role": "user"
+}
+```
+
+---
+
+## 📍 VENUE MODULE
+
+### **GET /venues/**
+
+> Barcha joylarni olish
+
+**Response**
+
+```json
+[
+  { "id": 1, "name": "Humo Arena", "lon": 69.275, "lat": 41.312 },
+  { "id": 2, "name": "Milliy Stadium", "lon": 69.287, "lat": 41.339 }
+]
+```
+
+---
+
+### **POST /venues/** *(admin only)*
+
+> Yangi joy qo‘shish
+
+**Request**
+
+```json
+{
+  "name": "Humo Arena",
+  "lon": 69.275,
+  "lat": 41.312
+}
+```
+
+---
+
+### **PATCH /venues/{id}** *(admin only)*
+
+> Venue ma’lumotini yangilash
+
+---
+
+### **DELETE /venues/{id}** *(admin only)*
+
+> Venue ni o‘chirish
+
+---
+
+## 🎤 EVENT MODULE
+
+### **GET /events/**
+
+> Barcha eventlarni olish
+
+**Response**
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Concert",
+    "description": "Live music night",
+    "limit_age": 18,
+    "venue": { "id": 1, "name": "Humo Arena" },
+    "start_time": "2025-11-02T19:00:00",
+    "end_time": "2025-11-02T22:00:00"
+  }
+]
+```
+
+---
+
+### **GET /events/{id}**
+
+> Bitta event tafsilotlari (barcha ticketlar bilan)
+
+**Response**
+
+```json
+{
+  "id": 1,
+  "name": "Concert",
+  "description": "Live music night",
+  "limit_age": 18,
+  "venue": { "id": 1, "name": "Humo Arena" },
+  "tickets": [
+    { "id": 1, "name": "VIP", "price": 300.00, "quantity": 50 },
+    { "id": 2, "name": "Standard", "price": 100.00, "quantity": 200 }
+  ]
+}
+```
+
+---
+
+### **POST /events/** *(admin only)*
+
+> Yangi event qo‘shish
+
+**Request**
+
+```json
+{
+  "name": "Concert",
+  "description": "Live music night",
+  "limit_age": 18,
+  "venue_id": 1,
+  "start_time": "2025-11-02T19:00:00",
+  "end_time": "2025-11-02T22:00:00"
+}
+```
+
+---
+
+### **PATCH /events/{id}** *(admin only)*
+
+### **DELETE /events/{id}** *(admin only)*
+
+---
+
+## 🎟️ TICKET MODULE
+
+### **GET /tickets/**
+
+> Barcha ticketlar ro‘yxati (admin only)
+
+---
+
+### **POST /tickets/** *(admin only)*
+
+> Event uchun yangi ticket yaratish
+
+**Request**
+
+```json
+{
+  "name": "VIP",
+  "event_id": 1,
+  "price": 300.00,
+  "quantity": 100
+}
+```
+
+---
+
+### **PATCH /tickets/{id}** *(admin only)*
+
+> Narx yoki miqdorni o‘zgartirish
+
+---
+
+### **DELETE /tickets/{id}** *(admin only)*
+
+---
+
+## 🧾 ORDER MODULE
+
+### **GET /orders/** *(admin only)*
+
+> Barcha buyurtmalar
+
+**Response**
+
+```json
+[
+  {
+    "id": 1,
+    "user": "diyor",
+    "ticket": "VIP",
+    "quantity": 2,
+    "status": "paid",
+    "total_price": 600.00
+  }
+]
+```
+
+---
+
+### **GET /orders/my** *(user only)*
+
+> Foydalanuvchining o‘z buyurtmalari
+
+---
+
+### **POST /orders/** *(user only)*
+
+> Yangi order yaratish
+
+**Request**
+
+```json
+{
+  "ticket_id": 1,
+  "quantity": 2
+}
+```
+
+**Response**
+
+```json
+{
+  "id": 1,
+  "status": "pending",
+  "total_price": 600.00
+}
+```
+
+---
+
+### **PATCH /orders/{id}/status** *(admin only)*
+
+> Admin buyurtma statusini o‘zgartiradi
+
+**Request**
+
+```json
+{ "status": "paid" }
+```
+
+**Response**
+
+```json
+{
+  "id": 1,
+  "status": "paid"
+}
+```
+
+---
+
+### **DELETE /orders/{id}** *(user yoki admin)*
+
+> Orderni bekor qilish
+
+---
+
+## 🔐 Access Summary
+
+| Role  | Endpoint prefix                                     | Permissions  |
+| ----- | --------------------------------------------------- | ------------ |
+| user  | `/users/*`, `/orders/my`, `/orders/`                | view, create |
+| admin | `/venues/*`, `/events/*`, `/tickets/*`, `/orders/*` | full access  |
+
+---

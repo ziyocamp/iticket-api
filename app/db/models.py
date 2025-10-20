@@ -1,12 +1,11 @@
-from datetime import datetime
 from enum import Enum
 from sqlalchemy import (
     Column, Integer, String, Text, DECIMAL, ForeignKey,
     TIMESTAMP, CheckConstraint, func, Enum as SqlEnum
 )
 from sqlalchemy.orm import relationship
-from app.db.database import Base
 
+from app.db.database import Base
 
 
 class UserRoles(str, Enum):
