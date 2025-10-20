@@ -76,13 +76,15 @@ Bu degani:
 
 ### **5️⃣ orders**
 
-| Column      | Type          | Constraints                                                                                      | Description    |
-| ----------- | ------------- | ------------------------------------------------------------------------------------------------ | -------------- |
-| id          | SERIAL        | PRIMARY KEY                                                                                      | Order ID       |
-| user_id     | INT           | REFERENCES users(id) ON DELETE CASCADE                                                           | Kim sotib oldi |
-| ticket_id   | INT           | REFERENCES tickets(id) ON DELETE CASCADE                                                         | Qaysi ticket   |
-| quantity    | INT           | CHECK (quantity > 0)                                                                             | Nechta chipta  |
-| total_price | DECIMAL(10,2) | GENERATED ALWAYS AS (quantity * (SELECT price FROM tickets WHERE tickets.id = ticket_id)) STORED | Umumiy summa   |
-| created_at  | TIMESTAMP     | DEFAULT now()                                                                                    | Buyurtma vaqti |
+| Column      | Type          | Constraints                                                                                   | Description               |
+| ----------- | ------------- | --------------------------------------------------------------------------------------------- | ------------------------- |
+| id          | SERIAL        | PRIMARY KEY                                                                                   | Order ID                  |
+| user_id     | INT           | REFERENCES users(id) ON DELETE CASCADE                                                        | Buyurtma egasi            |
+| ticket_id   | INT           | REFERENCES tickets(id) ON DELETE CASCADE                                                      | Qaysi ticket              |
+| quantity    | INT           | CHECK (quantity > 0)                                                                          | Nechta chipta             |
+| status      | VARCHAR(20)   | DEFAULT 'pending' CHECK (status IN ('pending', 'paid', 'cancelled', 'refunded', 'completed')) | Buyurtma holati           |
+| total_price | DECIMAL(10,2) | CHECK (total_price >= 0)                                                                      | Umumiy summa              |
+| created_at  | TIMESTAMP     | DEFAULT now()                                                                                 | Yaratilgan vaqt           |
+| updated_at  | TIMESTAMP     | DEFAULT now()                                                                                 | Oxirgi o‘zgartirish vaqti |
 
 ---
