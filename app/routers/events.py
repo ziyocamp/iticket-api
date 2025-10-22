@@ -23,7 +23,7 @@ def create_event(
     return event_service.create_event(event_data, db)
 
 @router.get('/', response_model=List[schemas.EventResponse])
-def create_event(
+def get_events(
     db: Session = Depends(get_db)
 ):
     return event_service.get_events(db)
