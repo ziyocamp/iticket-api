@@ -12,7 +12,7 @@ venue_service = VenueService()
 
 
 @router.post('/', response_model=schemas.VenueResponse)
-def create_venues(
+def create_venue(
     venue_data: schemas.VenueCreate, 
     current_user = Depends(get_current_user),
     db: Session = Depends(get_db)

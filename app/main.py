@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import users, venues
+from app.routers import users, venues, events
 
 app = FastAPI(
     title="ITicket API",
@@ -18,3 +18,4 @@ app.add_middleware(
 
 app.include_router(users.router)
 app.include_router(venues.router)
+app.include_router(events.router)
