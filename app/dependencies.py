@@ -1,11 +1,13 @@
 from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from sqlalchemy.orm import Session
+
 from app.core.config import settings
 from app.db import models, database
 from app.core.security import verify_password
+from app.db.models import UserRoles
 
-from fastapi.security import OAuth2PasswordBearer
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/login")
 
@@ -29,3 +31,15 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return user
+
+def get_admin(current_user = Depends(get_current_user)):
+    if current_user.role != UserRoles.ADMIN:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="not allawed.")
+    
+    return current_user
+
+def get_user(current_user = Depends(get_current_user)):
+    if current_user.role != UserRoles.USER:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="not allawed.")
+    
+    return current_user

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import users, venues, events, tickets
+from app.routers import users, venues, events, tickets, orders
 
 app = FastAPI(
     title="ITicket API",
@@ -20,3 +20,4 @@ app.include_router(users.router)
 app.include_router(venues.router)
 app.include_router(events.router)
 app.include_router(tickets.router)
+app.include_router(orders.router)
