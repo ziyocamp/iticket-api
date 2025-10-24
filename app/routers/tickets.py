@@ -14,7 +14,7 @@ ticket_service = TicketService()
 def create_ticket(
     ticket_data: schemas.TicketCreate, 
     admin = Depends(get_admin),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     return ticket_service.create_ticket(ticket_data, db)
 
@@ -23,5 +23,3 @@ def get_tickets(
     db: Session = Depends(get_db)
 ):
     return ticket_service.get_tickets(db)
-
-

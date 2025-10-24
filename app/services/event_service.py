@@ -1,6 +1,7 @@
 from typing import List
 
 from sqlalchemy.orm import Session
+from fastapi import HTTPException, status
 
 from app.db import models
 from app.schemas import event as schemas
@@ -27,3 +28,16 @@ class EventService:
 
         return new_event
     
+    def get_event(self, db: Session, event_int: int) -> models.Event:
+        event = db.query(models.Event).filter_by(id=event_int).first()
+        if not event:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='no event.')
+        
+        return event
+    
+    def add_banner_url(self, db: Session, event: models.Event, file_path: str) -> models.Event:
+        event.banner = file_path
+        db.add(event)
+        db.commit()
+
+        return event
